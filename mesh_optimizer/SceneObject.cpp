@@ -53,17 +53,8 @@ void SceneObject::initDrawing() {
 		std::cout << "VAO: " << mVAOs[i] << std::endl;
 		std::cout << mName << ":\tLoading shape: " << it->name << std::endl;
 		std::cout << mName << ":\tVertices: " << mAttributes.vertices.size() / 3 << std::endl;
-		for (int i = 0; i < mAttributes.vertices.size() / 3; ++i) {
-			for (int j = 0; j < 3; ++j) {
-				std::cout << mAttributes.vertices[i * 3 + j] << "\t";
-			}
-			std::cout << std::endl;
-		}
 		std::cout << mName << ":\tNormals: " << mAttributes.normals.size() / 3 << std::endl;
 		std::cout << mName << ":\tIndices: " << mesh.indices.size() << std::endl;
-		for (int i = 0; i < mesh.indices.size(); ++i) {
-			std::cout << mesh.indices[i].vertex_index << ",\t";
-		}
 
 		glBindVertexArray(mVAOs[i]);
 
@@ -87,7 +78,6 @@ void SceneObject::initDrawing() {
 			glUseProgram(shader);
 
 			GLint vertexLocation = glGetAttribLocation(shader, "vertex");
-			std::cout << "vertexLocation: " << vertexLocation << std::endl;
 
 			glVertexAttribPointer(vertexLocation, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 			checkError();
@@ -116,7 +106,7 @@ void SceneObject::makeShaderPrograms() {
 		out vec4 color;
 	in vec4 position;
 	void main() {
-		color = vec4(position.xyz, 1);
+		color = vec4(1, 1, 1, 0.7);
 	}
 	);
 
@@ -132,7 +122,7 @@ void SceneObject::makeShaderPrograms() {
 	std::cout << mName << ":\tDefault shader program created. Programs total: " << mShaderPrograms.size() << std::endl;
 }
 
-void SceneObject::draw(glm::mat4 V, glm::mat4 P) const {
+void SceneObject::draw(cam::Camera* camera) const {
 	for (int i = 0; i < mShapes.size(); ++i) {
 		auto mesh = mShapes[i].mesh;
 
@@ -148,9 +138,9 @@ void SceneObject::draw(glm::mat4 V, glm::mat4 P) const {
 			GLint glPLocation = glGetUniformLocation(shader, "P");
 
 			glUniformMatrix4fv(glMLocation, 1, false, glm::value_ptr(glm::mat4()));
-			glUniformMatrix4fv(glVLocation, 1, false, glm::value_ptr(V));
-			glUniformMatrix4fv(glPLocation, 1, false, glm::value_ptr(P));
-
+			glUniformMatrix4fv(glVLocation, 1, false, glm::value_ptr(camera->view()));
+			glUniformMatrix4fv(glPLocation, 1, false, glm::value_ptr(camera->projection()));
+		
 			glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, NULL);
 			checkError();
 		}

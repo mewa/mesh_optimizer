@@ -3,6 +3,7 @@
 #include "tiny_obj_loader.h"
 #include "glconf.h"
 #include "ShaderProgram.h"
+#include "Camera.h"
 #include "Drawable.h"
 #include <string>
 #include <vector>
@@ -24,7 +25,7 @@ namespace mewa {
 		void makeShaderPrograms();
 	public:
 		SceneObject(std::string const& fname);
-		virtual void draw(glm::mat4 V, glm::mat4 P) const;
+		virtual void draw(cam::Camera* camera) const;
 		virtual ~SceneObject();
 	private:
 		virtual void initDrawing();
