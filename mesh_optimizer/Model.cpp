@@ -37,6 +37,13 @@ void Model::loadAsset(std::string const& fname) {
 
 	aiScene const* scene = importer.ReadFile(fname, aiProcess_GenNormals
 		| aiProcess_Triangulate);
+
+	if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+	{
+		std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
+		return;
+	}
+
 	aiNode * rootNode = scene->mRootNode;
 	processNode(rootNode, scene);
 

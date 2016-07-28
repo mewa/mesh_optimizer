@@ -55,7 +55,6 @@ void calcFPS(GLFWwindow* window) {
 	if (diff > 1.0) {
 		fps = frameCount / diff / 100;
 		frameCount = 0;
-		std::cout << "diff: " << diff << ", framecnt: " << frameCount << ", fps: " << fps << std::endl;
 		sprintf(buf, "FPS: %.3f", fps);
 		glfwSetWindowTitle(window, buf);
 		lastTime += 1.0;
@@ -87,7 +86,7 @@ int main(int argc, char* argv[])
 	glEnable(GL_DEPTH_TEST); //W³¹cz u¿ywanie Z-Bufora
 
 	scene = new mewa::Scene(window);
-	scene->addObject(new mewa::Model("cube.obj"));
+	scene->addObject(new mewa::Model("cyborg.obj"));
 	scene->registerCamera(new mewa::cam::FirstPersonCamera(window));
 
 	/* Loop until the user closes the window */
