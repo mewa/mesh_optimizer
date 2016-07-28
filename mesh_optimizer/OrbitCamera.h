@@ -13,6 +13,7 @@ namespace mewa {
 			OrbitCamera();
 			virtual ~OrbitCamera();
 			virtual void update(double x, double y);
+			virtual void update();
 		};
 	}
 }

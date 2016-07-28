@@ -15,6 +15,10 @@ glm::mat4 const& Camera::view() const {
 	return mViewMatrix;
 }
 
+glm::vec3 const& Camera::position() const {
+	return mPosition;
+}
+
 Camera::~Camera()
 {
 }

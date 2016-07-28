@@ -25,6 +25,15 @@ namespace mewa {
 		virtual ~Event();
 	};
 
+	class KeyPressed
+		: public Event {
+	public:
+		int const action;
+		int const key;
+		KeyPressed(int action, int key);
+		virtual Event::Type getType() const;
+	};
+
 	class MouseEvent
 		: public Event {
 	public:

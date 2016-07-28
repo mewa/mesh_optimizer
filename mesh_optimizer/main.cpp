@@ -1,12 +1,11 @@
 // 6ix.cpp : Defines the entry point for the console application.
 //
 
-#include "tiny_obj_loader.h"
 #include "glconf.h"
 #include <cstdio>
 #include <iostream>
 #include "Scene.h"
-#include "OrbitCamera.h"
+#include "FirstPersonCamera.h"
 
 mewa::Scene* scene;
 
@@ -33,7 +32,7 @@ GLFWwindow* initGLFW() {
 		exit(33);
 
 	/* Create a windowed mode window and its OpenGL context */
-	GLFWwindow* window = glfwCreateWindow(1024, 768, "Hello World", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(600, 600, "Hello World", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -44,6 +43,25 @@ GLFWwindow* initGLFW() {
 
 #define GLSL(version, shader)  "#version " #version "\n" #shader
 
+double diff = 0;
+long frameCount = 0;
+double lastTime = glfwGetTime();
+char buf[20];
+float fps;
+
+void calcFPS(GLFWwindow* window) {
+	diff = glfwGetTime() - lastTime;
+	frameCount++;
+	if (diff > 1.0) {
+		fps = frameCount / diff / 100;
+		frameCount = 0;
+		std::cout << "diff: " << diff << ", framecnt: " << frameCount << ", fps: " << fps << std::endl;
+		sprintf(buf, "FPS: %.3f", fps);
+		glfwSetWindowTitle(window, buf);
+		lastTime += 1.0;
+	}
+}
+
 void drawFrame(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -52,6 +70,7 @@ void drawFrame(GLFWwindow* window) {
 	//glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, NULL);
 
 	glfwSwapBuffers(window);
+	calcFPS(window);
 }
 
 int main(int argc, char* argv[])
@@ -64,12 +83,12 @@ int main(int argc, char* argv[])
 
 	initializeGLEW();
 
-	glClearColor(0, 0.3, 0.3, 1); //Czyœæ ekran na czarno	
+	glClearColor(0.3, 0.3, 0.3, 1); //Czyœæ ekran na czarno	
 	glEnable(GL_DEPTH_TEST); //W³¹cz u¿ywanie Z-Bufora
 
 	scene = new mewa::Scene(window);
-	scene->addObject(new mewa::SceneObject("Handgun_obj.obj"));
-	scene->registerCamera(new mewa::cam::OrbitCamera());
+	scene->addObject(new mewa::Model("cube.obj"));
+	scene->registerCamera(new mewa::cam::FirstPersonCamera(window));
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
