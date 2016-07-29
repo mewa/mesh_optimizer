@@ -45,7 +45,14 @@ size_t Mesh::vertexCount() const {
 	return mVertices.size();
 }
 
-unsigned Mesh::material() {
+std::vector<Vertex> const& Mesh::vertices() const {
+	return mVertices;
+}
+std::vector<GLuint> const& Mesh::indices() const {
+	return mIndices;
+}
+
+unsigned Mesh::material() const {
 	return mMaterialIndex;
 }
 

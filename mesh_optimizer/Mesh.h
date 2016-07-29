@@ -20,8 +20,10 @@ namespace mewa {
 		Mesh(std::vector<Vertex> const&& vertices, std::vector<GLuint> const&& indices, unsigned materialIdx);
 		virtual ~Mesh();
 
-		unsigned material();
+		unsigned material() const;
 		size_t vertexCount() const;
+		std::vector<Vertex> const& vertices() const;
+		std::vector<GLuint> const& indices() const;
 
 		virtual void draw(GLuint shader) const;
 	};

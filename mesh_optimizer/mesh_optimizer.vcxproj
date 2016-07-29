@@ -151,12 +151,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="EdgeCollapseOperator.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="FirstPersonCamera.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Drawable.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshDecimator.cpp" />
     <ClCompile Include="OrbitCamera.cpp" />
     <ClCompile Include="PlainShaderProgram.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -166,16 +168,22 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Drawable.h" />
+    <ClInclude Include="EdgeCollapseOperator.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="FirstPersonCamera.h" />
     <ClInclude Include="glconf.h" />
+    <ClInclude Include="Graph.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshDecimator.h" />
     <ClInclude Include="OrbitCamera.h" />
     <ClInclude Include="PlainShaderProgram.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ShaderProgram.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graph.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

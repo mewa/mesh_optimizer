@@ -6,6 +6,7 @@
 #include <iostream>
 #include "Scene.h"
 #include "FirstPersonCamera.h"
+#include "MeshDecimator.h"
 
 mewa::Scene* scene;
 
