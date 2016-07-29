@@ -23,6 +23,7 @@ void mouse_click(GLFWwindow* window, int button, int action, int mods) {
 
 Scene::Scene(GLFWwindow* window)
 {
+	mWindow = window;
 	using namespace std::placeholders;
 	Event::startListening(window);
 	Event::registerEventListener(Event::Type::MouseMoved, [this](Event const* ev) {
@@ -40,6 +41,13 @@ void Scene::makeShaderProgram() {
 
 void Scene::addObject(Model* obj) {
 	mObjects.push_back(std::unique_ptr<Model>(obj));
+	size_t vertexCount = 0;
+	for (auto it = mObjects.begin(); it != mObjects.end(); ++it) {
+		vertexCount += it->get()->vertexCount();
+	}
+	char buf[64];
+	sprintf(buf, "Vertices: %lu", vertexCount);
+	glfwSetWindowTitle(mWindow, buf);
 }
 
 void Scene::registerCamera(cam::Camera* camera) {

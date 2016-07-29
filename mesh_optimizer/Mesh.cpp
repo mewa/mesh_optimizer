@@ -41,6 +41,10 @@ void Mesh::draw(GLuint shader) const {
 	glBindVertexArray(0);
 }
 
+size_t Mesh::vertexCount() const {
+	return mVertices.size();
+}
+
 unsigned Mesh::material() {
 	return mMaterialIndex;
 }

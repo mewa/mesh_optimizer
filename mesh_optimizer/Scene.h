@@ -10,6 +10,7 @@
 namespace mewa {
 	class Scene
 	{
+		GLFWwindow* mWindow;
 		std::vector<std::unique_ptr<Model>> mObjects;
 		cam::Camera* mCamera;
 		ShaderProgram* mShader;

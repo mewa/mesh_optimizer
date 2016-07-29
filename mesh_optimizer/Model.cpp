@@ -95,6 +95,14 @@ void Model::processMesh(aiMesh const* aiMesh, aiScene const* scene) {
 	mMeshes.push_back(Mesh(std::move(vertices), std::move(indices), aiMesh->mMaterialIndex));
 }
 
+size_t Model::vertexCount() const {
+	size_t count = 0;
+	for (auto it = mMeshes.begin(); it != mMeshes.end(); ++it) {
+		count += it->vertexCount();
+	}
+	return count;
+}
+
 void Model::useShader(GLuint shader) const {
 	GLint curr;
 	glGetIntegerv(GL_CURRENT_PROGRAM, &curr);

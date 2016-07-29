@@ -21,6 +21,7 @@ namespace mewa {
 		virtual ~Mesh();
 
 		unsigned material();
+		size_t vertexCount() const;
 
 		virtual void draw(GLuint shader) const;
 	};

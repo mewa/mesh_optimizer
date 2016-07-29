@@ -56,7 +56,7 @@ void calcFPS(GLFWwindow* window) {
 		fps = frameCount / diff / 100;
 		frameCount = 0;
 		sprintf(buf, "FPS: %.3f", fps);
-		glfwSetWindowTitle(window, buf);
+		std::cout << buf << std::endl;
 		lastTime += 1.0;
 	}
 }

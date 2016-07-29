@@ -31,6 +31,8 @@ namespace mewa {
 		Model(std::string const& fname);
 		virtual void draw(GLuint shader) const;
 		virtual ~Model();
+
+		size_t vertexCount() const;
 	};
 }
 
