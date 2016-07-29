@@ -142,32 +142,53 @@ bool Graph::collapse(Vertex const* a, Vertex const* b, std::vector<Triangle*>::i
 	triangles.insert(trianglesA.begin(), trianglesA.end());
 	triangles.insert(trianglesB.begin(), trianglesB.end());
 
+	bool ret = false;
+
 	for (auto it = triangles.begin(); it != triangles.end();) {
 		int num = 0;
-		if ((*it)->a == a || (*it)->a == b) {
-			(*it)->a = collapsed;
+		Triangle triangle((*it)->a, (*it)->b, (*it)->c);
+		auto normal = (*it)->normal;
+
+		if (triangle.a == a || triangle.a == b) {
+			triangle.a = collapsed;
 			++num;
 		}
-		if ((*it)->b == a || (*it)->b == b) {
-			(*it)->b = collapsed;
+		if (triangle.b == a || triangle.b == b) {
+			triangle.b = collapsed;
 			++num;
 		}
-		if ((*it)->c == a || (*it)->c == b) {
-			(*it)->c = collapsed;
+		if (triangle.c == a || triangle.c == b) {
+			triangle.c = collapsed;
 			++num;
 		}
-		if (num > 1) {
-			removeTriangle(*it, affectedVertices, iterator);
-			removeVertex(a);
-			removeVertex(b);
-			it = triangles.erase(it);
+		triangle.calcNormal();
+		auto normal2 = triangle.normal;
+		glm::vec3 side = triangle.b->Position - triangle.a->Position;
+		float dot = glm::dot(normal, side);
+		if (!dot) {
+			(*it)->a = triangle.a;
+			(*it)->b = triangle.b;
+			(*it)->c = triangle.c;
+
+			if (num > 0) {
+				removeVertex(a);
+				removeVertex(b);
+			}
+			if (num > 1) {
+				removeTriangle(*it, affectedVertices, iterator);
+				it = triangles.erase(it);
+				ret = true;
+			}
+			else {
+				++it;
+			}
 		}
 		else {
 			++it;
 		}
 	}
 
-	return true;
+	return ret;
 }
 
 void Graph::removeTriangle(Triangle const* triangle, std::set<Vertex const*> const& affectedVertices, std::vector<Triangle*>::iterator& iterator) {

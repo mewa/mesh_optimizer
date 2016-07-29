@@ -47,6 +47,13 @@ void Scene::removeObject(Model* obj) {
 		return obj == ptr.get();
 	});
 	mObjects.erase(pos);
+	size_t vertexCount = 0;
+	for (auto it = mObjects.begin(); it != mObjects.end(); ++it) {
+		vertexCount += it->get()->vertexCount();
+	}
+	char buf[64];
+	sprintf(buf, "Vertices: %lu", vertexCount);
+	glfwSetWindowTitle(mWindow, buf);
 }
 
 void Scene::registerCamera(cam::Camera* camera) {

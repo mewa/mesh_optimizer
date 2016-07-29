@@ -17,6 +17,12 @@ namespace mewa {
 			this->c = c;
 		}
 
+		void calcNormal() {
+			glm::vec3 ab = b->Position - a->Position;
+			glm::vec3 ac = c->Position - a->Position;
+			normal = glm::normalize(glm::cross(ab, ac));
+		}
+
 		bool operator==(Triangle const& rhs) {
 			return a == rhs.a
 				&& b == rhs.b
