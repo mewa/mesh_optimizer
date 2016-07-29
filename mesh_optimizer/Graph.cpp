@@ -163,9 +163,11 @@ bool Graph::collapse(Vertex const* a, Vertex const* b, std::vector<Triangle*>::i
 		}
 		triangle.calcNormal();
 		auto normal2 = triangle.normal;
-		glm::vec3 side = triangle.b->Position - triangle.a->Position;
-		float dot = glm::dot(normal, side);
-		if (!dot) {
+		glm::vec3 ab = triangle.b->Position - triangle.a->Position;
+		glm::vec3 ac = triangle.c->Position - triangle.a->Position;
+		glm::vec3 bc = triangle.c->Position - triangle.b->Position;
+		
+		if (!glm::dot(normal, ab) && !glm::dot(normal, ac) && !glm::dot(normal, bc)) {
 			(*it)->a = triangle.a;
 			(*it)->b = triangle.b;
 			(*it)->c = triangle.c;

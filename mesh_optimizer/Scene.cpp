@@ -70,17 +70,32 @@ void Scene::draw() {
 	glUniformMatrix4fv(glPLocation, 1, false, glm::value_ptr(mCamera->projection()));
 
 	glUniform3fv(viewPosLocation, 1, glm::value_ptr(mCamera->position()));
-
+	
 	for (int i = 0; i < mObjects.size(); ++i) {
-		GLint lightColorLocation = glGetUniformLocation(mShader->get(), "light.ambient");
-		GLint lightPositionLocation = glGetUniformLocation(mShader->get(), "light.position");
-		GLint lightDiffuseLocation = glGetUniformLocation(mShader->get(), "light.diffuse");
-		GLint lightSpecularLocation = glGetUniformLocation(mShader->get(), "light.diffuse");
+		GLint lightNumLocation = glGetUniformLocation(mShader->get(), "numLights");
+
+		glUniform1i(lightNumLocation, 2);
+
+		GLint lightColorLocation = glGetUniformLocation(mShader->get(), "lights[0].ambient");
+		GLint lightPositionLocation = glGetUniformLocation(mShader->get(), "lights[0].position");
+		GLint lightDiffuseLocation = glGetUniformLocation(mShader->get(), "lights[0].diffuse");
+		GLint lightSpecularLocation = glGetUniformLocation(mShader->get(), "lights[0].specular");
 
 		glUniform3f(lightColorLocation, 1, 1, 1);
 		glUniform3f(lightPositionLocation, 3, 2, 5);
-		glUniform3f(lightDiffuseLocation, 1, 1, 1);
+		glUniform3f(lightDiffuseLocation, 0.8, 0.8, 0.8);
 		glUniform3f(lightSpecularLocation, 1, 1, 1);
+
+
+		lightColorLocation = glGetUniformLocation(mShader->get(), "lights[1].ambient");
+		lightPositionLocation = glGetUniformLocation(mShader->get(), "lights[1].position");
+		lightDiffuseLocation = glGetUniformLocation(mShader->get(), "lights[1].diffuse");
+		lightSpecularLocation = glGetUniformLocation(mShader->get(), "lights[1].specular");
+
+		glUniform3f(lightColorLocation, 0, 0, 0);
+		glUniform3fv(lightPositionLocation, 1, glm::value_ptr(mCamera->position()));
+		glUniform3f(lightDiffuseLocation, 0.2, 0.2, 0.2);
+		glUniform3f(lightSpecularLocation, 0, 0, 0);
 
 		mCamera->update();
 		mObjects[i].get()->draw(mShader->get());
