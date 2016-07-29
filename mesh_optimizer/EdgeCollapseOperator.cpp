@@ -12,6 +12,6 @@ EdgeCollapseOperator::~EdgeCollapseOperator()
 {
 }
 
-std::vector<Vertex> EdgeCollapseOperator::decimate(std::vector<Vertex> const& region) {
+std::vector<Vertex> EdgeCollapseOperator::decimate(std::vector<Vertex> const& region, Graph<Vertex>* graph) {
 	return region;
 }

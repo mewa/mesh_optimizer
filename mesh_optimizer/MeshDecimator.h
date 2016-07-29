@@ -2,6 +2,7 @@
 
 #include "Mesh.h"
 #include <vector>
+#include "Graph.h"
 
 namespace mewa {
 	namespace decimator {
@@ -9,8 +10,8 @@ namespace mewa {
 
 		class MeshDecimator
 		{
-			std::vector<bool> mValidity;
-			DecimationOperator* mOperator;
+			Graph<Vertex>* mGraph = NULL;
+			DecimationOperator* mOperator = NULL;
 		public:
 			MeshDecimator(DecimationOperator* op);
 			virtual ~MeshDecimator();
@@ -21,7 +22,7 @@ namespace mewa {
 		class DecimationOperator {
 		public:
 			virtual ~DecimationOperator();
-			virtual std::vector<Vertex> decimate(std::vector<Vertex> const& region) = 0;
+			virtual std::vector<Vertex> decimate(std::vector<Vertex> const& region, Graph<Vertex>* graph) = 0;
 		};
 	}
 }

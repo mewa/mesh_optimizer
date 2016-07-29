@@ -11,9 +11,12 @@ namespace mewa {
 			float mPrevX, mPrevY;
 			bool isFirst;
 			GLFWwindow* mWindow;
+			GLuint currentMode;
 
 			void updateViewMatrix();
 		public:
+			static GLuint mode;
+		
 			FirstPersonCamera(GLFWwindow* window);
 			virtual ~FirstPersonCamera();
 

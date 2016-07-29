@@ -5,6 +5,19 @@
 using namespace mewa;
 using namespace mewa::cam;
 
+GLuint FirstPersonCamera::mode = GL_FILL;
+
+void mouse_click(GLFWwindow* window, int button, int action, int mods) {
+	if (button == GLFW_MOUSE_BUTTON_1) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		FirstPersonCamera::mode = GL_FILL;
+	}
+	else if (button = GLFW_MOUSE_BUTTON_2) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		FirstPersonCamera::mode = GL_LINE;
+	}
+}
+
 FirstPersonCamera::FirstPersonCamera(GLFWwindow* window)
 {
 	mWindow = window;
@@ -22,9 +35,11 @@ FirstPersonCamera::FirstPersonCamera(GLFWwindow* window)
 	Event::registerEventListener(Event::Type::KeyPressed, [this](Event const* ev) {
 		auto event = static_cast<KeyPressed const*>(ev);
 	});
+	glfwSetMouseButtonCallback(window, mouse_click);
 }
 
 void FirstPersonCamera::update() {
+	glPolygonMode(GL_FRONT_AND_BACK, mode);
 	float unit = 5.0f;
 	if (glfwGetKey(mWindow, GLFW_KEY_W) == GLFW_PRESS) {
 		move(unit);

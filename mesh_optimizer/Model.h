@@ -28,8 +28,15 @@ namespace mewa {
 		void processNode(aiNode * node, aiScene const* scene);
 		void processMesh(aiMesh const* mesh, aiScene const* scene);
 	public:
+		Model();
 		Model(std::string const& fname);
+
+		std::vector<Mesh> const& meshes() const;
+		std::vector<Material> const& materials() const;
+
 		virtual void draw(GLuint shader) const;
+		virtual void addMesh(Mesh const& mesh);
+		virtual void addMaterial(Material const& material);
 		virtual ~Model();
 
 		size_t vertexCount() const;

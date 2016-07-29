@@ -14,7 +14,12 @@ void checkError() {
 	}
 }
 
+Model::Model() {
+	mModelMatrix = glm::mat4(1.0f);
+}
+
 Model::Model(std::string const& fname)
+	: Model()
 {
 	mName = fname;
 	std::cout << "Loading " << mName << std::endl;
@@ -22,7 +27,6 @@ Model::Model(std::string const& fname)
 
 	loadAsset(fname);
 
-	mModelMatrix = glm::mat4(1.0f);
 	std::cout << "Finished loading " << mName << std::endl;
 }
 
@@ -132,6 +136,21 @@ void Model::draw(GLuint shader) const {
 		mesh.draw(shader);
 	}
 	glBindVertexArray(0);
+}
+
+std::vector<Mesh> const& Model::meshes() const {
+	return mMeshes;
+}
+std::vector<Material> const& Model::materials() const {
+	return mMaterials;
+}
+
+void Model::addMesh(Mesh const& mesh) {
+	mMeshes.push_back(mesh);
+}
+
+void Model::addMaterial(Material const& material) {
+	mMaterials.push_back(material);
 }
 
 Model::~Model()

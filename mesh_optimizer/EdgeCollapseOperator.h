@@ -8,7 +8,7 @@ namespace mewa {
 		public:
 			EdgeCollapseOperator();
 			virtual ~EdgeCollapseOperator();
-			virtual std::vector<Vertex> decimate(std::vector<Vertex> const& region);
+			virtual std::vector<Vertex> decimate(std::vector<Vertex> const& region, Graph<Vertex>* graph);
 		};
 	}
 }
