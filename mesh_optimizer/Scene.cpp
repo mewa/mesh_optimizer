@@ -42,6 +42,13 @@ void Scene::addObject(Model* obj) {
 	glfwSetWindowTitle(mWindow, buf);
 }
 
+void Scene::removeObject(Model* obj) {
+	auto pos = std::find_if(mObjects.begin(), mObjects.end(), [&](std::unique_ptr<Model>& ptr){
+		return obj == ptr.get();
+	});
+	mObjects.erase(pos);
+}
+
 void Scene::registerCamera(cam::Camera* camera) {
 	mCamera = camera;
 }

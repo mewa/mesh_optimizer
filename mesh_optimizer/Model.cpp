@@ -38,9 +38,9 @@ float vertices[] = {
 
 void Model::loadAsset(std::string const& fname) {
 	Assimp::Importer importer;
-
+	importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, aiComponent_COLORS | aiComponent_NORMALS);
 	aiScene const* scene = importer.ReadFile(fname, aiProcess_Triangulate |
-		aiProcess_GenNormals
+		aiProcess_GenNormals | aiProcess_RemoveComponent
 		);
 
 	if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
@@ -82,7 +82,7 @@ void Model::processNode(aiNode * node, aiScene const* scene) {
 }
 
 void Model::processMesh(aiMesh const* aiMesh, aiScene const* scene) {
-	std::vector<Vertex> vertices(aiMesh->mNumVertices);
+	std::vector<Vertex const> vertices(aiMesh->mNumVertices);
 	for (int i = 0; i < aiMesh->mNumVertices; ++i) {
 		Vertex vertex;
 		vertex.Position = glm::vec3(aiMesh->mVertices[i].x, aiMesh->mVertices[i].y, aiMesh->mVertices[i].z);
@@ -91,7 +91,7 @@ void Model::processMesh(aiMesh const* aiMesh, aiScene const* scene) {
 		}
 		vertices[i] = vertex;
 	}
-	std::vector<GLuint> indices;
+	std::vector<GLuint const> indices;
 	indices.reserve(aiMesh->mNumVertices);
 	for (int i = 0; i < aiMesh->mNumFaces; ++i) {
 		for (int j = 0; j < aiMesh->mFaces[i].mNumIndices; ++j) {

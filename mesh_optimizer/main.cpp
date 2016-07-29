@@ -9,6 +9,7 @@
 #include "MeshDecimator.h"
 #include "EdgeCollapseOperator.h"
 #include <thread>
+#include "Event.h"
 
 GLuint bufVertices;
 GLuint vao;
@@ -82,6 +83,19 @@ void posCallback(GLFWwindow* window, int x, int y) {
 	glfwShowWindow(window);
 }
 
+int decimationLevel = 0;
+
+void decimateModel(mewa::Model*& model, mewa::Scene* scene) {
+	mewa::decimator::MeshDecimator decimator;
+	auto tmp = model;
+	for (auto it = tmp->meshes().begin(); it != tmp->meshes().end(); ++it) {
+		auto decimatedModel = new mewa::Model(decimator.decimate(*it));
+		scene->addObject(decimatedModel);
+		model = decimatedModel;
+	}
+	scene->removeObject(tmp);
+}
+
 void decimated(GLFWwindow* w, mewa::cam::Camera* cam, std::string file) {
 	GLFWwindow* window = initGLFW(w);
 	win2 = window;
@@ -101,26 +115,21 @@ void decimated(GLFWwindow* w, mewa::cam::Camera* cam, std::string file) {
 	glClearColor(0.3, 0.3, 0.3, 1); //Czyœæ ekran na czarno	
 	glEnable(GL_DEPTH_TEST); //W³¹cz u¿ywanie Z-Bufora
 
-	mewa::decimator::MeshDecimator decimator;
-
 	auto scene = new mewa::Scene(window);
 
 	auto model = new mewa::Model(file.c_str());
-
-	auto decimatedModel = new mewa::Model();
-	for (auto it = model->materials().begin(); it != model->materials().end(); ++it) {
-		decimatedModel->addMaterial(*it);
-	}
-	for (auto it = model->meshes().begin(); it != model->meshes().end(); ++it) {
-		decimatedModel->addMesh(decimator.decimate(*it));
-	}
-
 	scene->addObject(model);
 	scene->registerCamera(cam);
+
+	int currentDecimationLevel = decimationLevel;
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
+		if (decimationLevel != currentDecimationLevel) {
+			decimateModel(model, scene);
+			currentDecimationLevel = decimationLevel;
+		}
 		drawFrame(window, scene);
 
 		glfwPollEvents();
@@ -144,7 +153,7 @@ int main(int argc, char* argv[])
 
 	auto scene = new mewa::Scene(window);
 
-	std::string file = "cyborg.obj";
+	std::string file = "untitled.obj";
 
 	auto model = new mewa::Model(file);
 	scene->addObject(model);
@@ -153,6 +162,12 @@ int main(int argc, char* argv[])
 
 	std::thread decimatedWindowThread(&decimated, window, cam, file);
 
+	mewa::Event::registerEventListener(mewa::Event::Type::KeyPressed, [](mewa::Event const* ev) {
+		auto event = static_cast<mewa::KeyPressed const*>(ev);
+		if (event->action == GLFW_RELEASE && event->key == GLFW_KEY_ENTER) {
+			std::cout << "Decimation level: " << ++decimationLevel << std::endl;
+		}
+	});
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))

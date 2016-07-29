@@ -20,6 +20,7 @@ namespace mewa {
 		virtual ~Scene();
 
 		void addObject(Model* obj);
+		void removeObject(Model* obj);
 		void registerCamera(cam::Camera* camera);
 		void draw();
 

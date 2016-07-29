@@ -2,7 +2,15 @@
 
 using namespace mewa;
 
-Mesh::Mesh(std::vector<Vertex> const&& vertices, std::vector<GLuint> const&& indices, unsigned materialIdx)
+Mesh::Mesh(std::vector<Vertex const> const&& vertices, std::vector<GLuint const> const&& indices, unsigned materialIdx)
+{
+	mVertices = vertices;
+	mIndices = indices;
+	mMaterialIndex = materialIdx;
+	init();
+}
+
+Mesh::Mesh(std::vector<Vertex const> const& vertices, std::vector<GLuint const> const& indices, unsigned materialIdx)
 {
 	mVertices = vertices;
 	mIndices = indices;
@@ -45,10 +53,10 @@ size_t Mesh::vertexCount() const {
 	return mVertices.size();
 }
 
-std::vector<Vertex> const& Mesh::vertices() const {
+std::vector<Vertex const> const& Mesh::vertices() const {
 	return mVertices;
 }
-std::vector<GLuint> const& Mesh::indices() const {
+std::vector<GLuint const> const& Mesh::indices() const {
 	return mIndices;
 }
 

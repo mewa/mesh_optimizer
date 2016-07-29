@@ -8,6 +8,7 @@ namespace mewa {
 		Vertex const* a;
 		Vertex const* b;
 		Vertex const* c;
+		glm::vec3 normal;
 		std::vector<Triangle>* neighbours;
 
 		Triangle(Vertex const* a, Vertex const* b, Vertex const* c) {
@@ -37,12 +38,19 @@ namespace mewa {
 		Vertex const* findVertex(std::vector<Vertex const*> const& vertices, Vertex const* v);
 		std::vector<Vertex const*> intersect(std::vector<Vertex const*> const& a, std::vector<Vertex const*> const& b);
 
+		void removeTriangle(Triangle const* triangle, std::set<Vertex const*> const& affectedVertices, std::vector<Triangle*>::iterator& iterator);
+		void removeVertex(Vertex const* vertex);
+
+		std::string writeMesh();
 	public:
 		Graph(Mesh const& mesh);
 		virtual ~Graph();
 
-		bool collapse(Vertex const* a, Vertex const* b);
-		void collapse();
+		bool collapse(Vertex const* a, Vertex const* b, std::vector<Triangle*>::iterator& iterator);
+		std::string collapse();
+
+		//std::vector<Vertex const> vertices();
+		//std::vector<GLuint const> indices();
 	};
 }
 
