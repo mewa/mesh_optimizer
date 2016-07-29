@@ -154,6 +154,7 @@
     <ClCompile Include="EdgeCollapseOperator.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="FirstPersonCamera.cpp" />
+    <ClCompile Include="Graph.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Drawable.cpp" />
     <ClCompile Include="Material.cpp" />
@@ -181,9 +182,6 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ShaderProgram.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Graph.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

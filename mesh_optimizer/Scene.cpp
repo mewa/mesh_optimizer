@@ -14,13 +14,15 @@ float sensitivity = 10;
 
 Scene::Scene(GLFWwindow* window)
 {
+	mCamera = 0;
 	mWindow = window;
 	using namespace std::placeholders;
 	Event::startListening(window);
 	Event::registerEventListener(Event::Type::MouseMoved, [this](Event const* ev) {
 		auto event = static_cast<MouseEvent const*>(ev);
 
-		mCamera->update(event->x, event->y);
+		if (mCamera)
+			mCamera->update(event->x, event->y);
 	});
 	makeShaderProgram();
 }

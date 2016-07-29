@@ -7,6 +7,12 @@ namespace mewa {
 	struct Vertex {
 		glm::vec3 Position;
 		glm::vec3 Normal;
+
+		bool operator==(Vertex const& rhs) const {
+			return std::abs(this->Position.x - rhs.Position.x) < FLT_EPSILON
+				&& std::abs(this->Position.y - rhs.Position.y) < FLT_EPSILON
+				&& std::abs(this->Position.z - rhs.Position.z) < FLT_EPSILON;
+		}
 	};
 	class Mesh
 		: public Drawable
@@ -28,4 +34,5 @@ namespace mewa {
 		virtual void draw(GLuint shader) const;
 	};
 }
+
 

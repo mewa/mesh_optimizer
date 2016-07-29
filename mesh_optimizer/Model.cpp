@@ -39,8 +39,9 @@ float vertices[] = {
 void Model::loadAsset(std::string const& fname) {
 	Assimp::Importer importer;
 
-	aiScene const* scene = importer.ReadFile(fname, aiProcess_GenNormals
-		| aiProcess_Triangulate);
+	aiScene const* scene = importer.ReadFile(fname, aiProcess_Triangulate |
+		aiProcess_GenNormals
+		);
 
 	if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
@@ -90,7 +91,8 @@ void Model::processMesh(aiMesh const* aiMesh, aiScene const* scene) {
 		}
 		vertices[i] = vertex;
 	}
-	std::vector<GLuint> indices(aiMesh->mNumVertices);
+	std::vector<GLuint> indices;
+	indices.reserve(aiMesh->mNumVertices);
 	for (int i = 0; i < aiMesh->mNumFaces; ++i) {
 		for (int j = 0; j < aiMesh->mFaces[i].mNumIndices; ++j) {
 			indices.push_back(aiMesh->mFaces[i].mIndices[j]);

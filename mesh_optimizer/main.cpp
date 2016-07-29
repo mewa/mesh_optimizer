@@ -78,16 +78,18 @@ void posCallback(GLFWwindow* window, int x, int y) {
 	int width;
 	glfwGetWindowSize(window, &width, NULL);
 	glfwSetWindowPos(win2, x + width + spacing, y);
+	glfwShowWindow(win2);
 	glfwShowWindow(window);
 }
 
-void decimated(GLFWwindow* w, mewa::cam::Camera* cam) {
+void decimated(GLFWwindow* w, mewa::cam::Camera* cam, std::string file) {
 	GLFWwindow* window = initGLFW(w);
 	win2 = window;
 	int x, y, width;
 	glfwGetWindowPos(w, &x, &y);
 	glfwGetWindowSize(w, &width, NULL);
 	glfwSetWindowPos(win2, x + width + spacing, y);
+	glfwShowWindow(window);
 	glfwShowWindow(w);
 	glfwSetWindowPosCallback(w, posCallback);
 
@@ -99,11 +101,11 @@ void decimated(GLFWwindow* w, mewa::cam::Camera* cam) {
 	glClearColor(0.3, 0.3, 0.3, 1); //Czyœæ ekran na czarno	
 	glEnable(GL_DEPTH_TEST); //W³¹cz u¿ywanie Z-Bufora
 
-	mewa::decimator::MeshDecimator decimator(new mewa::decimator::EdgeCollapseOperator());
+	mewa::decimator::MeshDecimator decimator;
 
 	auto scene = new mewa::Scene(window);
 
-	auto model = new mewa::Model("cube.obj");
+	auto model = new mewa::Model(file.c_str());
 
 	auto decimatedModel = new mewa::Model();
 	for (auto it = model->materials().begin(); it != model->materials().end(); ++it) {
@@ -113,7 +115,7 @@ void decimated(GLFWwindow* w, mewa::cam::Camera* cam) {
 		decimatedModel->addMesh(decimator.decimate(*it));
 	}
 
-	scene->addObject(decimatedModel);
+	scene->addObject(model);
 	scene->registerCamera(cam);
 
 	/* Loop until the user closes the window */
@@ -140,25 +142,16 @@ int main(int argc, char* argv[])
 	glClearColor(0.3, 0.3, 0.3, 1); //Czyœæ ekran na czarno	
 	glEnable(GL_DEPTH_TEST); //W³¹cz u¿ywanie Z-Bufora
 
-	mewa::decimator::MeshDecimator decimator(new mewa::decimator::EdgeCollapseOperator());
-
 	auto scene = new mewa::Scene(window);
 
-	auto model = new mewa::Model("cube.obj");
+	std::string file = "cube.obj";
 
-	auto decimatedModel = new mewa::Model();
-	for (auto it = model->materials().begin(); it != model->materials().end(); ++it) {
-		decimatedModel->addMaterial(*it);
-	}
-	for (auto it = model->meshes().begin(); it != model->meshes().end(); ++it) {
-		decimatedModel->addMesh(decimator.decimate(*it));
-	}
-
+	auto model = new mewa::Model(file);
 	scene->addObject(model);
 	auto cam = new mewa::cam::FirstPersonCamera(window);
 	scene->registerCamera(cam);
 
-	std::thread decimatedWindowThread(&decimated, window, cam);
+	std::thread decimatedWindowThread(&decimated, window, cam, file);
 
 
 	/* Loop until the user closes the window */

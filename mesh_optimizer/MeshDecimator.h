@@ -10,10 +10,9 @@ namespace mewa {
 
 		class MeshDecimator
 		{
-			Graph<Vertex>* mGraph = NULL;
-			DecimationOperator* mOperator = NULL;
+			Graph* mGraph = NULL;
 		public:
-			MeshDecimator(DecimationOperator* op);
+			MeshDecimator();
 			virtual ~MeshDecimator();
 			virtual Mesh decimate(Mesh const& mesh);
 			virtual void constructGraph(Mesh const& mesh);
@@ -22,7 +21,7 @@ namespace mewa {
 		class DecimationOperator {
 		public:
 			virtual ~DecimationOperator();
-			virtual std::vector<Vertex> decimate(std::vector<Vertex> const& region, Graph<Vertex>* graph) = 0;
+			virtual std::vector<Vertex> decimate(std::vector<Vertex> const& region, std::vector<size_t> const& regionIndices, Graph* graph) = 0;
 		};
 	}
 }

@@ -60,6 +60,9 @@
     <ClCompile Include="EdgeCollapseOperator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graph.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Drawable.h">
@@ -107,10 +110,5 @@
     <ClInclude Include="Graph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Graph.inl">
-      <Filter>Header Files</Filter>
-    </None>
   </ItemGroup>
 </Project>
