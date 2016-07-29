@@ -144,7 +144,7 @@ int main(int argc, char* argv[])
 
 	auto scene = new mewa::Scene(window);
 
-	std::string file = "cube.obj";
+	std::string file = "cyborg.obj";
 
 	auto model = new mewa::Model(file);
 	scene->addObject(model);

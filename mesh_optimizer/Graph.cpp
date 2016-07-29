@@ -9,24 +9,24 @@ Graph::Graph(Mesh const& mesh)
 {
 	for (std::vector<GLuint>::const_iterator it = mesh.indices().begin(); it != mesh.indices().end(); it++) {
 		auto a = &mesh.vertices()[*(it)];
-		auto foundA = findVertex(a);
+		auto foundA = findVertex(mVertices, a);
 		if (foundA) a = foundA;
 
 		auto b = &mesh.vertices()[*(++it)];
-		auto foundB = findVertex(b);
+		auto foundB = findVertex(mVertices, b);
 		if (foundB) b = foundB;
 
 		auto c = &mesh.vertices()[*(++it)];
-		auto foundC = findVertex(c);
+		auto foundC = findVertex(mVertices, c);
 		if (foundC) c = foundC;
 
 		Triangle* t = new Triangle(a, b, c);
 		mTriangles.push_back(t);
 
 
-		pushVertex(a);
-		pushVertex(b);
-		pushVertex(c);
+		pushVertex(mVertices, a);
+		pushVertex(mVertices, b);
+		pushVertex(mVertices, c);
 
 		mIncidentTriangles[a].push_back(t);
 		mIncidentTriangles[b].push_back(t);
@@ -37,10 +37,10 @@ Graph::Graph(Mesh const& mesh)
 	//}
 }
 
-Vertex const* Graph::findVertex(Vertex const* v) {
+Vertex const* Graph::findVertex(std::vector<Vertex const*> const& vertices, Vertex const* v) {
 	Vertex const* found = NULL;
-	for (int i = 0; i < mVertices.size(); ++i) {
-		auto other = mVertices[i];
+	for (int i = 0; i < vertices.size(); ++i) {
+		auto other = vertices[i];
 		if (*v == *other) {
 			found = other;
 			break;
@@ -49,9 +49,9 @@ Vertex const* Graph::findVertex(Vertex const* v) {
 	return found;
 }
 
-void Graph::pushVertex(Vertex const* v) {
-	if (!findVertex(v)) {
-		mVertices.push_back(v);
+void Graph::pushVertex(std::vector<Vertex const*>& vertices, Vertex const* v) {
+	if (!findVertex(vertices, v)) {
+		vertices.push_back(v);
 	}
 }
 
@@ -70,34 +70,48 @@ std::vector<Triangle*> Graph::getIncidentTriangles(Triangle const* v) {
 	vec.insert(vec.end(), triangles.begin(), triangles.end());
 	triangles = getIncidentTriangles(v->c);
 	vec.insert(vec.end(), triangles.begin(), triangles.end());
-	vec.erase(std::find(vec.begin(), vec.end(),  v));
+	vec.erase(std::find(vec.begin(), vec.end(), v));
 	return vec;
 }
 
-std::vector<Vertex*> Graph::getIncidentVertices(Vertex const* v) {
+std::vector<Vertex const*> Graph::getIncidentVertices(Vertex const* v) {
 	auto triangles = getIncidentTriangles(v);
-	std::vector<Vertex*> vertices;
+	std::vector<Vertex const*> vertices;
 	for (auto it = triangles.begin(); it != triangles.end(); ++it) {
-		
+		pushVertex(vertices, (*it)->a);
+		pushVertex(vertices, (*it)->b);
+		pushVertex(vertices, (*it)->c);
+	}
+	auto result = std::find(vertices.begin(), vertices.end(), v);
+	if (1 || result < vertices.end()) {
+		vertices.erase(result);
 	}
 	return vertices;
 }
 
 void Graph::collapse() {
 	for (auto it = mTriangles.begin(); it != mTriangles.end(); ++it) {
-		//bool collapsed = collapse(it->a, it->b) || collapse(it->a, it->c) || collapse(it->b, it->c);
+		auto a = (*it)->a;
+		auto b = (*it)->b;
+		auto c = (*it)->c;
+		bool collapsed = collapse(a, b) || collapse(a, c) || collapse(b, c);
 	}
+}
+
+std::vector<Vertex const*> Graph::intersect(std::vector<Vertex const*> const& a, std::vector<Vertex const*> const& b) {
+	std::vector<Vertex const*> intersection;
+	for (auto it = a.begin(); it != a.end(); ++it) {
+		if (findVertex(b, *it)) {
+			intersection.push_back(*it);
+		}
+	}
+	return intersection;
 }
 
 bool Graph::collapse(Vertex const* a, Vertex const* b) {
 	auto incidentA = getIncidentVertices(a);
 	auto incidentB = getIncidentVertices(b);
-	std::vector<Vertex*> intersection;
-	std::set_intersection(incidentA.begin(), incidentA.end(), incidentB.begin(), incidentB.end(), 
-		std::inserter(intersection, intersection.begin()));
-	return true;
-	intersection.erase(std::find(intersection.begin(), intersection.end(), a));
-	intersection.erase(std::find(intersection.begin(), intersection.end(), b));
+	std::vector<Vertex const*> intersection = intersect(incidentA, incidentB);
 
 	if (intersection.size() != 2)
 		return false;

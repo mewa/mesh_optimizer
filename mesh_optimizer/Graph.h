@@ -31,9 +31,12 @@ namespace mewa {
 
 		std::vector<Triangle*> getIncidentTriangles(Vertex const* v);
 		std::vector<Triangle*> getIncidentTriangles(Triangle const* v);
-		std::vector<Vertex*> getIncidentVertices(Vertex const* v);
-		void pushVertex(Vertex const* v);
-		Vertex const* findVertex(Vertex const* v);
+		std::vector<Vertex const*> getIncidentVertices(Vertex const* v);
+		
+		void pushVertex(std::vector<Vertex const*>& vertices, Vertex const* v);
+		Vertex const* findVertex(std::vector<Vertex const*> const& vertices, Vertex const* v);
+		std::vector<Vertex const*> intersect(std::vector<Vertex const*> const& a, std::vector<Vertex const*> const& b);
+
 	public:
 		Graph(Mesh const& mesh);
 		virtual ~Graph();
