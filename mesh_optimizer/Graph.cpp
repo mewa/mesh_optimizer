@@ -161,23 +161,20 @@ bool Graph::collapse(Vertex const* a, Vertex const* b, std::vector<Triangle*>::i
 			triangle.c = collapsed;
 			++num;
 		}
-		triangle.calcNormal();
-		auto normal2 = triangle.normal;
 		glm::vec3 ab = triangle.b->Position - triangle.a->Position;
 		glm::vec3 ac = triangle.c->Position - triangle.a->Position;
 		glm::vec3 bc = triangle.c->Position - triangle.b->Position;
-		
+
 		if (!glm::dot(normal, ab) && !glm::dot(normal, ac) && !glm::dot(normal, bc)) {
 			(*it)->a = triangle.a;
 			(*it)->b = triangle.b;
 			(*it)->c = triangle.c;
+			(*it)->calcNormal();
 
-			if (num > 0) {
-				removeVertex(a);
-				removeVertex(b);
-			}
 			if (num > 1) {
 				removeTriangle(*it, affectedVertices, iterator);
+				removeVertex(a);
+				removeVertex(b);
 				it = triangles.erase(it);
 				ret = true;
 			}
@@ -205,53 +202,99 @@ void Graph::removeTriangle(Triangle const* triangle, std::set<Vertex const*> con
 
 void Graph::removeVertex(Vertex const* vertex) {
 	auto pos = std::find(mVertices.begin(), mVertices.end(), vertex);
-	if (pos < mVertices.end())
+	if (pos < mVertices.end()) {
 		mVertices.erase(pos);
-	mIncidentTriangles.erase(vertex);
+		mIncidentTriangles.erase(vertex);
+	}
 }
 
 std::string Graph::writeMesh() {
 	std::string fname;
-	std::stringstream ss;
+	std::stringstream ss, nss;
 	ss << "decimated_" << time(0) << ".obj";
 	fname = ss.str();
 	std::cout << "Writing decimated mesh to " << fname << std::endl;
 
 	std::ofstream f(fname, std::ofstream::out);
 	GLuint pos = 1;
+	GLuint normPos = 1;
 	std::map<Vertex const*, size_t> vertexPosMap;
 
 	ss.str(std::string());
 	for (auto it = mTriangles.begin(); it != mTriangles.end(); ++it) {
+		// normals
+		auto a = (*it)->a;
+		auto b = (*it)->b;
+		auto c = (*it)->c;
+
+		auto incidentTriangles = mIncidentTriangles[(*it)->a];
+		glm::vec3 norm(0);
+		for (int i = 0; i < incidentTriangles.size(); ++i) {
+			incidentTriangles[i]->calcNormal();
+			norm += incidentTriangles[i]->normal;
+		}
+		norm = normalize(norm);
+		nss << "vn\t"
+			<< norm.x << "\t" << norm.y << "\t" << norm.z << std::endl;
+		++normPos;
+
+		incidentTriangles = mIncidentTriangles[(*it)->b];
+		norm = glm::vec3(0);
+		for (int i = 0; i < incidentTriangles.size(); ++i) {
+			incidentTriangles[i]->calcNormal();
+			norm += incidentTriangles[i]->normal;
+		}
+		norm = normalize(norm);
+		nss << "vn\t"
+			<< norm.x << "\t" << norm.y << "\t" << norm.z << std::endl;
+		++normPos;
+
+		incidentTriangles = mIncidentTriangles[(*it)->c];
+		norm = glm::vec3(0);
+		auto size = incidentTriangles.size();
+		for (int i = 0; i < incidentTriangles.size(); ++i) {
+			incidentTriangles[i]->calcNormal();
+			norm += incidentTriangles[i]->normal;
+		}
+		norm = normalize(norm);
+		nss << "vn\t"
+			<< norm.x << "\t" << norm.y << "\t" << norm.z << std::endl;
+		++normPos;
+
+		// positions
+
 		if (vertexPosMap.find((*it)->a) == vertexPosMap.end()) {
 			vertexPosMap[(*it)->a] = pos++;
 			f << "v\t"
 				<< (*it)->a->Position.x << "\t"
 				<< (*it)->a->Position.y << "\t"
-				<< (*it)->a->Position.z << "\n";
+				<< (*it)->a->Position.z << std::endl;
 		}
 		if (vertexPosMap.find((*it)->b) == vertexPosMap.end()) {
 			vertexPosMap[(*it)->b] = pos++;
 			f << "v\t"
 				<< (*it)->b->Position.x << "\t"
 				<< (*it)->b->Position.y << "\t"
-				<< (*it)->b->Position.z << "\n";
+				<< (*it)->b->Position.z << std::endl;
 		}
 		if (vertexPosMap.find((*it)->c) == vertexPosMap.end()) {
 			vertexPosMap[(*it)->c] = pos++;
 			f << "v\t"
 				<< (*it)->c->Position.x << "\t"
 				<< (*it)->c->Position.y << "\t"
-				<< (*it)->c->Position.z << "\n";
+				<< (*it)->c->Position.z << std::endl;
 		}
 		size_t posA = vertexPosMap[(*it)->a];
 		size_t posB = vertexPosMap[(*it)->b];
 		size_t posC = vertexPosMap[(*it)->c];
 		ss << "f\t"
-			<< posA << "\t" << posB << "\t" << posC << "\n";
+			<< posA << "//" << normPos - 3 << "\t"
+			<< posB << "//" << normPos - 2 << "\t"
+			<< posC << "//" << normPos - 1 << std::endl;
 	}
 	std::string faces = ss.str();
-	f << faces;
+	std::string normals = nss.str();
+	f << normals << faces;
 
 	f.close();
 	return fname;

@@ -15,6 +15,7 @@ namespace mewa {
 			this->a = a;
 			this->b = b;
 			this->c = c;
+			calcNormal();
 		}
 
 		void calcNormal() {

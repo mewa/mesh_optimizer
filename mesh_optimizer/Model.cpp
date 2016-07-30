@@ -40,7 +40,7 @@ void Model::loadAsset(std::string const& fname) {
 	Assimp::Importer importer;
 	importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, aiComponent_COLORS | aiComponent_NORMALS);
 	aiScene const* scene = importer.ReadFile(fname, aiProcess_Triangulate |
-		aiProcess_GenNormals | aiProcess_RemoveComponent
+		aiProcess_GenSmoothNormals | aiProcess_RemoveComponent
 		);
 
 	if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)

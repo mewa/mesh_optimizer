@@ -83,7 +83,7 @@ void Scene::draw() {
 
 		glUniform3f(lightColorLocation, 1, 1, 1);
 		glUniform3f(lightPositionLocation, 3, 2, 5);
-		glUniform3f(lightDiffuseLocation, 0.8, 0.8, 0.8);
+		glUniform3f(lightDiffuseLocation, 0.2, 0.2, 0.2);
 		glUniform3f(lightSpecularLocation, 1, 1, 1);
 
 
@@ -94,7 +94,7 @@ void Scene::draw() {
 
 		glUniform3f(lightColorLocation, 0, 0, 0);
 		glUniform3fv(lightPositionLocation, 1, glm::value_ptr(mCamera->position()));
-		glUniform3f(lightDiffuseLocation, 0.2, 0.2, 0.2);
+		glUniform3f(lightDiffuseLocation, 0.8, 0.8, 0.8);
 		glUniform3f(lightSpecularLocation, 0, 0, 0);
 
 		mCamera->update();

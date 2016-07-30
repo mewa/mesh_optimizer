@@ -70,7 +70,7 @@ vec3 calcLight(Light light, vec3 viewDir, vec3 norm) {
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
 	vec3 specular = light.specular * (spec * material.specular);
 
-	vec3 result = ambient + diffuse + specular;
+	vec3 result = ambient + diffuse;// +specular;
 	return result;
 }
 );
