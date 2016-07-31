@@ -87,13 +87,18 @@ int decimationLevel = 0;
 
 void decimateModel(mewa::Model*& model, mewa::Scene* scene) {
 	mewa::decimator::MeshDecimator decimator;
-	auto tmp = model;
-	for (auto it = tmp->meshes().begin(); it != tmp->meshes().end(); ++it) {
-		auto decimatedModel = new mewa::Model(decimator.decimate(*it));
-		scene->addObject(decimatedModel);
-		model = decimatedModel;
+	auto decimatedModel = new mewa::Model();
+	int i = 0;
+	for (auto it = model->meshes().begin(); it != model->meshes().end(); ++it) {
+		std::cout << "Decimating mesh " << ++i << " out of " << model->meshes().size() << std::endl;
+		decimatedModel->addMesh(decimator.decimate(*it));
 	}
-	scene->removeObject(tmp);
+	for (auto it = model->materials().begin(); it != model->materials().end(); ++it) {
+		decimatedModel->addMaterial(*it);
+	}
+	scene->removeObject(model);
+	scene->addObject(decimatedModel);
+	model = decimatedModel;
 }
 
 void decimated(GLFWwindow* w, mewa::cam::Camera* cam, std::string file) {
@@ -112,7 +117,7 @@ void decimated(GLFWwindow* w, mewa::cam::Camera* cam, std::string file) {
 
 	initializeGLEW();
 
-	glClearColor(0.3, 0.3, 0.3, 1); //Czyœæ ekran na czarno	
+	glClearColor(0.2, 0.5, 0.5, 1); //Czyœæ ekran na czarno	
 	glEnable(GL_DEPTH_TEST); //W³¹cz u¿ywanie Z-Bufora
 
 	auto scene = new mewa::Scene(window);
@@ -148,12 +153,12 @@ int main(int argc, char* argv[])
 
 	initializeGLEW();
 
-	glClearColor(0.3, 0.3, 0.3, 1); //Czyœæ ekran na czarno	
+	glClearColor(0.2, 0.5, 0.5, 1); //Czyœæ ekran na czarno	
 	glEnable(GL_DEPTH_TEST); //W³¹cz u¿ywanie Z-Bufora
 
 	auto scene = new mewa::Scene(window);
 
-	std::string file = "untitled.obj";
+	std::string file = "Avent.obj";
 
 	auto model = new mewa::Model(file);
 	scene->addObject(model);

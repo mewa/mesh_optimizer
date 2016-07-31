@@ -165,6 +165,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -182,6 +183,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

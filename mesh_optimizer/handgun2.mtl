@@ -1,0 +1,24 @@
+# Blender MTL File: 'None'
+# Material Count: 2
+
+newmtl handgun
+Ns 90.196078
+Ka 0.000000 0.000000 0.000000
+Kd 0.409600 0.409600 0.409600
+Ks 1.000000 1.000000 1.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd ..\textures\handgun_S.jpg
+map_Bump ..\\textures\\handgun_N.jpg
+
+newmtl handgun_handgun_C.jpg
+Ns 90.196078
+Ka 0.000000 0.000000 0.000000
+Kd 0.409600 0.409600 0.409600
+Ks 1.000000 1.000000 1.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd ..\textures\handgun_C.jpg
+map_Bump ..\\textures\\handgun_N.jpg

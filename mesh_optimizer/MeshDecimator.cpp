@@ -16,7 +16,7 @@ MeshDecimator::~MeshDecimator()
 		delete mGraph;
 }
 
-void MeshDecimator::constructGraph(Mesh const& mesh) {
+void MeshDecimator::constructGraph(Mesh* mesh) {
 	if (mGraph) {
 		delete mGraph;
 		mGraph = NULL;
@@ -24,9 +24,13 @@ void MeshDecimator::constructGraph(Mesh const& mesh) {
 	mGraph = new Graph(mesh);
 }
 
-std::string MeshDecimator::decimate(Mesh const& mesh) {
+Mesh* MeshDecimator::decimate(Mesh* mesh) {
+	assert(mesh->indices().size() % 3 == 0);
 	constructGraph(mesh);
-	return mGraph->collapse();
+	mGraph->collapse();
+	//auto decimatedMesh = new Mesh(mGraph->vertices(), mGraph->indices(), mesh->material());
+	//assert(decimatedMesh->indices().size() % 3 == 0);
+	return mGraph->mesh(mesh->material());
 
 	//float xMin = mesh.vertices()[0].Position.x;
 	//float yMin = mesh.vertices()[0].Position.y;

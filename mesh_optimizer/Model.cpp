@@ -40,7 +40,7 @@ void Model::loadAsset(std::string const& fname) {
 	Assimp::Importer importer;
 	importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, aiComponent_COLORS | aiComponent_NORMALS);
 	aiScene const* scene = importer.ReadFile(fname, aiProcess_Triangulate |
-		aiProcess_GenSmoothNormals | aiProcess_RemoveComponent
+		aiProcess_GenNormals | aiProcess_RemoveComponent
 		);
 
 	if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
@@ -82,7 +82,7 @@ void Model::processNode(aiNode * node, aiScene const* scene) {
 }
 
 void Model::processMesh(aiMesh const* aiMesh, aiScene const* scene) {
-	std::vector<Vertex const> vertices(aiMesh->mNumVertices);
+	std::vector<Vertex> vertices(aiMesh->mNumVertices);
 	for (int i = 0; i < aiMesh->mNumVertices; ++i) {
 		Vertex vertex;
 		vertex.Position = glm::vec3(aiMesh->mVertices[i].x, aiMesh->mVertices[i].y, aiMesh->mVertices[i].z);
@@ -91,20 +91,23 @@ void Model::processMesh(aiMesh const* aiMesh, aiScene const* scene) {
 		}
 		vertices[i] = vertex;
 	}
-	std::vector<GLuint const> indices;
+	std::vector<GLuint> indices;
 	indices.reserve(aiMesh->mNumVertices);
 	for (int i = 0; i < aiMesh->mNumFaces; ++i) {
-		for (int j = 0; j < aiMesh->mFaces[i].mNumIndices; ++j) {
-			indices.push_back(aiMesh->mFaces[i].mIndices[j]);
+		if (aiMesh->mFaces[i].mNumIndices == 3) {
+			for (int j = 0; j < aiMesh->mFaces[i].mNumIndices; ++j) {
+				indices.push_back(aiMesh->mFaces[i].mIndices[j]);
+			}
 		}
 	}
-	mMeshes.push_back(Mesh(std::move(vertices), std::move(indices), aiMesh->mMaterialIndex));
+	assert(indices.size() % 3 == 0);
+	mMeshes.push_back(new Mesh(std::move(vertices), std::move(indices), aiMesh->mMaterialIndex));
 }
 
 size_t Model::vertexCount() const {
 	size_t count = 0;
 	for (auto it = mMeshes.begin(); it != mMeshes.end(); ++it) {
-		count += it->vertexCount();
+		count += (*it)->vertexCount();
 	}
 	return count;
 }
@@ -120,7 +123,7 @@ void Model::draw(GLuint shader) const {
 	useShader(shader);
 	for (int i = 0; i < mMeshes.size(); ++i) {
 		auto mesh = mMeshes[i];
-		auto material = mMaterials[mesh.material()];
+		auto material = mMaterials[mesh->material()];
 		GLint glMLocation = glGetUniformLocation(shader, "M");
 
 		glUniformMatrix4fv(glMLocation, 1, false, glm::value_ptr(mModelMatrix));
@@ -135,19 +138,19 @@ void Model::draw(GLuint shader) const {
 		glUniform3fv(specularLocation, 1, glm::value_ptr(material.specular()));
 		glUniform1f(shininessLocation, material.shininess());
 
-		mesh.draw(shader);
+		mesh->draw(shader);
 	}
 	glBindVertexArray(0);
 }
 
-std::vector<Mesh> const& Model::meshes() const {
+std::vector<Mesh*> const& Model::meshes() const {
 	return mMeshes;
 }
 std::vector<Material> const& Model::materials() const {
 	return mMaterials;
 }
 
-void Model::addMesh(Mesh const& mesh) {
+void Model::addMesh(Mesh* mesh) {
 	mMeshes.push_back(mesh);
 }
 

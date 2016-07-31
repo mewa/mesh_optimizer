@@ -14,8 +14,8 @@ namespace mewa {
 		public:
 			MeshDecimator();
 			virtual ~MeshDecimator();
-			virtual std::string decimate(Mesh const& mesh);
-			virtual void constructGraph(Mesh const& mesh);
+			virtual Mesh* decimate(Mesh* mesh);
+			virtual void constructGraph(Mesh* mesh);
 		};
 
 		class DecimationOperator {

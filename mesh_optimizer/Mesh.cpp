@@ -2,7 +2,7 @@
 
 using namespace mewa;
 
-Mesh::Mesh(std::vector<Vertex const> const&& vertices, std::vector<GLuint const> const&& indices, unsigned materialIdx)
+Mesh::Mesh(std::vector<Vertex> const&& vertices, std::vector<GLuint> const&& indices, unsigned materialIdx)
 {
 	mVertices = vertices;
 	mIndices = indices;
@@ -10,7 +10,7 @@ Mesh::Mesh(std::vector<Vertex const> const&& vertices, std::vector<GLuint const>
 	init();
 }
 
-Mesh::Mesh(std::vector<Vertex const> const& vertices, std::vector<GLuint const> const& indices, unsigned materialIdx)
+Mesh::Mesh(std::vector<Vertex> const& vertices, std::vector<GLuint> const& indices, unsigned materialIdx)
 {
 	mVertices = vertices;
 	mIndices = indices;
@@ -46,6 +46,14 @@ void Mesh::init() {
 void Mesh::draw(GLuint shader) const {
 	glBindVertexArray(mVAO);
 	glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, NULL);
+	for (int i = 0; i < mIndices.size(); i += 3) {
+		auto ia = mIndices[i];
+		auto ib = mIndices[i + 1];
+		auto ic = mIndices[i + 2];
+		auto a = mVertices[ia].Position;
+		auto b = mVertices[ib].Position;
+		auto c = mVertices[ic].Position;
+	}
 	glBindVertexArray(0);
 }
 
@@ -53,10 +61,10 @@ size_t Mesh::vertexCount() const {
 	return mVertices.size();
 }
 
-std::vector<Vertex const> const& Mesh::vertices() const {
+std::vector<Vertex>& Mesh::vertices() {
 	return mVertices;
 }
-std::vector<GLuint const> const& Mesh::indices() const {
+std::vector<GLuint>& Mesh::indices() {
 	return mIndices;
 }
 

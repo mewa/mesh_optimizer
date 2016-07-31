@@ -19,7 +19,7 @@ namespace mewa {
 	{
 		std::string mName;
 		glm::mat4 mModelMatrix;
-		std::vector<Mesh> mMeshes;
+		std::vector<Mesh*> mMeshes;
 		std::vector<Material> mMaterials;
 
 		void useShader(GLuint shader) const;
@@ -31,11 +31,11 @@ namespace mewa {
 		Model();
 		Model(std::string const& fname);
 
-		std::vector<Mesh> const& meshes() const;
+		std::vector<Mesh*> const& meshes() const;
 		std::vector<Material> const& materials() const;
 
 		virtual void draw(GLuint shader) const;
-		virtual void addMesh(Mesh const& mesh);
+		virtual void addMesh(Mesh* mesh);
 		virtual void addMaterial(Material const& material);
 		virtual ~Model();
 
